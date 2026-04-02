@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,14 +21,14 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Map<String, String>> handleUnauthorized(UnauthorizedException ex) {
-        Map<String, String> response = new java.util.HashMap<>();
+        Map<String, String> response = new HashMap<>();
         response.put("message", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
-        Map<String, String> response = new java.util.HashMap<>();
+        Map<String, String> response = new HashMap<>();
         response.put("message", "Unable to delete board due to existing dependencies");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

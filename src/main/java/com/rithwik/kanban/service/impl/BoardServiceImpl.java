@@ -175,10 +175,10 @@ public class BoardServiceImpl implements BoardService {
 
         BoardMember membership = boardMemberRepository
                 .findByBoardIdAndUserId(boardId, currentUser.getId())
-                .orElseThrow(() -> new UnauthorizedException("Only a board ADMIN can delete the board"));
+                .orElseThrow(() -> new UnauthorizedException("Only admins can delete boards"));
 
         if (membership.getRole() != Role.ADMIN) {
-            throw new UnauthorizedException("Only a board ADMIN can delete the board");
+            throw new UnauthorizedException("Only admins can delete boards");
         }
 
         boardRepository.delete(board);

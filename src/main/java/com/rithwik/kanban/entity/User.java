@@ -3,6 +3,8 @@ package com.rithwik.kanban.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,8 +28,11 @@ public class User {
 
     private String password;
 
-    private String role;
+    @Column(nullable = false)
+    private String role = "USER";
 
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "owner")

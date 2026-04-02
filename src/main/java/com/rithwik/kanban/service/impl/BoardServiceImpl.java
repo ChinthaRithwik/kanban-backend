@@ -133,9 +133,22 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardResponse updateBoard(Long boardId, UpdateBoardRequest request) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
+
+        String email = CurrentUser.getEmail();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        BoardMember membership = boardMemberRepository
+                .findByBoardIdAndUserId(boardId, currentUser.getId())
+                .orElseThrow(() -> new UnauthorizedException("Only a board ADMIN can update the board"));
+
+        if (membership.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("Only a board ADMIN can update the board");
+        }
 
         if (request.getName() != null && !request.getName().isBlank()) {
             board.setName(request.getName());
@@ -155,6 +168,18 @@ public class BoardServiceImpl implements BoardService {
     public void deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not found"));
+
+        String email = CurrentUser.getEmail();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        BoardMember membership = boardMemberRepository
+                .findByBoardIdAndUserId(boardId, currentUser.getId())
+                .orElseThrow(() -> new UnauthorizedException("Only a board ADMIN can delete the board"));
+
+        if (membership.getRole() != Role.ADMIN) {
+            throw new UnauthorizedException("Only a board ADMIN can delete the board");
+        }
 
         boardRepository.delete(board);
     }

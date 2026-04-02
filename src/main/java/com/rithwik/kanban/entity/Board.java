@@ -26,6 +26,11 @@ public class Board {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    // ✅ already correct, just improve slightly
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardColumn> columns;
+
+    // 🔥 ADD THIS (THIS IS YOUR FIX)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardMember> members;
 }
